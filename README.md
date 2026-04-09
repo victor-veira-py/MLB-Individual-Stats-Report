@@ -1,5 +1,29 @@
 # MLB Individual Stats Executive Report ⚾🐍
 
+[Read this in English](#english-version) | [Leer en Español](#versión-en-español)
+
+---
+
+## English Version
+
+This project automates the extraction of MLB player historical statistics directly from the official API, generating professional executive reports in **Excel** with high-visibility formatting.
+
+### ✨ Key Features:
+* **Real-Time Data Extraction:** Direct connection to the official MLB API.
+* **Career Stats Engine:** Automatic generation of total rows with precise sums and career averages.
+* **Executive Formatting:** Corporate blue styling, defined borders, and MLB-standard averages (e.g., .300 style without leading zeros).
+* **Robustness:** Built-in data handling to prevent column type errors.
+
+### 🚀 Tech Stack:
+* **Python 3.x**
+* **Pandas** (Data Processing)
+* **Requests** (API Consumption)
+* **XlsxWriter** (Excel Report Design)
+
+---
+
+## Versión en Español
+
 Este proyecto automatiza la extracción de estadísticas históricas de jugadores de la **MLB** directamente desde su API oficial, generando reportes en **Excel** con un formato ejecutivo de alta visibilidad.
 
 ### ✨ Características Principales:
@@ -14,7 +38,12 @@ Este proyecto automatiza la extracción de estadísticas históricas de jugadore
 * **Requests** (Consumo de API)
 * **XlsxWriter** (Diseño de reportes Excel)
 
-### 📸 Vista Previa:<img width="1366" height="736" alt="preview_reporte png" src="https://github.com/user-attachments/assets/6a39ee40-13bb-4ecf-a6ca-a846c45d4801" />
+---
+
+### 📸 Vista Previa / Preview:
+
+<img width="1366" height="736" alt="preview_reporte png" src="https://github.com/user-attachments/assets/44f49545-5f0b-436d-9a3d-f9b2eb8a440d" />
+
 
 ---
-Desarrollado por **VICTOR ARMANDO DE OLIVEIRA RODRÍGUEZ**
+Developed by / Desarrollado por **VICTOR ARMANDO DE OLIVEIRA RODRÍGUEZ**
