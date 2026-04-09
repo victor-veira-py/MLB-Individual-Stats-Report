@@ -14,8 +14,7 @@ Este proyecto automatiza la extracción de estadísticas históricas de jugadore
 * **Requests** (Consumo de API)
 * **XlsxWriter** (Diseño de reportes Excel)
 
-### 📸 Vista Previa:
-*(Aquí puedes arrastrar una de tus capturas de pantalla, como la 100345.png, para que se vea el resultado final)*
+### 📸 Vista Previa:<img width="1366" height="736" alt="preview_reporte png" src="https://github.com/user-attachments/assets/6a39ee40-13bb-4ecf-a6ca-a846c45d4801" />
 
 ---
 Desarrollado por **VICTOR ARMANDO DE OLIVEIRA RODRÍGUEZ**
