@@ -1,19 +1,25 @@
+# ==============================================================================
+# PROYECTO: MLB Stats Analyzer - StatsAPI Integration
+# DESCRIPCIÓN: Generación de reportes individuales con formato MLB (.XXX)
+# DESCRIPTION: Generation of individual reports with MLB format (.XXX)
+# ==============================================================================
+
 import requests
 import pandas as pd
-
 
 def reporte_estilo_ejecutivo_pro(player_id):
     """
     Genera un reporte estadístico individual con formato empresarial.
-    Extrae datos de la StatsAPI de MLB, calcula totales de carrera y 
-    exporta a Excel con estilos de alta visibilidad (Look & Feel de MLB).
+    Generates an individual statistical report with business formatting.
     """
     try:
         # 1. Recuperación de metadatos desde la StatsAPI de MLB
+        # 1. Metadata retrieval from MLB StatsAPI
         info = requests.get(f"https://statsapi.mlb.com/api/v1/people/{player_id}").json()
         nombre_completo = info["people"][0].get("fullName", "Jugador")
 
         # Consulta de estadísticas agregadas por temporada (Year-by-Year)
+        # Querying aggregated statistics by season (Year-by-Year)
         url = f"https://statsapi.mlb.com/api/v1/people/{player_id}/stats?stats=yearByYear&group=hitting&sportIds=1"
         data = requests.get(url).json()
 
@@ -25,19 +31,24 @@ def reporte_estilo_ejecutivo_pro(player_id):
         lista_temporadas = []
 
         def fmt_mlb(valor):
-            """Aplica el formato estándar de MLB para porcentajes (.XXX)"""
+            """
+            Aplica el formato estándar de MLB para porcentajes (.XXX)
+            Applies MLB standard format for percentages (.XXX)
+            """
             try:
                 return f"{float(valor):.3f}".replace("0.", ".")
             except:
                 return ".000"
 
         # 2. Procesamiento de la data anual
+        # 2. Annual data processing
         for s in splits:
             stat = s.get("stat", {})
             ab = int(stat.get("atBats", 0))
             if ab == 0: continue
 
             # Gestión de nombres de equipo (Manejo de filas 'TOTAL' de la API)
+            # Team name management (Handling 'TOTAL' rows from the API)
             nombre_equipo = s.get("team", {}).get("name", "---")
             if nombre_equipo == "---":
                 nombre_equipo = "TOTAL"
@@ -58,7 +69,9 @@ def reporte_estilo_ejecutivo_pro(player_id):
         df = pd.DataFrame(lista_temporadas)
 
         # 3. Cálculo de Estadísticas de Carrera (Career Totals)
+        # 3. Career Totals Calculation
         # Filtramos filas 'TOTAL' para que la sumatoria sea exacta
+        # Filter 'TOTAL' rows so the summation is exact
         df_solo_equipos = df[df["EQUIPO"] != "TOTAL"]
 
         fila_totales = {
@@ -77,11 +90,13 @@ def reporte_estilo_ejecutivo_pro(player_id):
         }
 
         # Consolidación final y aplicación de formato visual .XXX
+        # Final consolidation and application of visual .XXX format
         df = pd.concat([df, pd.DataFrame([fila_totales])], ignore_index=True)
         for col in ["AVG", "OBP", "SLG", "OPS"]:
             df[col] = df[col].apply(fmt_mlb)
 
         # 4. Generación de Reporte Excel con XlsxWriter (Estilo Profesional)
+        # 4. Excel Report Generation with XlsxWriter (Professional Style)
         nombre_archivo = f"Reporte_Individual_{nombre_completo.replace(' ', '_')}.xlsx"
 
         with pd.ExcelWriter(nombre_archivo, engine='xlsxwriter') as writer:
@@ -89,7 +104,7 @@ def reporte_estilo_ejecutivo_pro(player_id):
             workbook = writer.book
             worksheet = writer.sheets['Estadisticas']
 
-            # Definición de formatos
+            # Definición de formatos / Format definitions
             f_header = workbook.add_format(
                 {'bold': True, 'bg_color': '#1F4E78', 'font_color': 'white', 'align': 'center', 'border': 1})
             f_data = workbook.add_format({'align': 'center', 'border': 1, 'border_color': '#D9D9D9'})
@@ -98,23 +113,25 @@ def reporte_estilo_ejecutivo_pro(player_id):
             worksheet.hide_gridlines(2)
             worksheet.ignore_errors({'number_stored_as_text': f'A2:T{len(df) + 1}'})
 
-            # Ajuste dinámico de columnas (Usando la lógica que nos funcionó hoy)
+            # Ajuste dinámico de columnas / Dynamic column adjustment
             for i, col in enumerate(df.columns):
                 ancho = max(df[col].astype(str).map(len).max(), len(col)) + 3
                 worksheet.set_column(i, i, ancho, f_data)
                 worksheet.write(0, i, col, f_header)
 
             # Aplicación de estilo a la fila de Totales (CARRERA)
+            # Style application for Totals row (CAREER)
             idx_ultima = len(df)
             for i in range(len(df.columns)):
                 worksheet.write(idx_ultima, i, df.iloc[-1, i], f_total)
 
         print(f"\n[SISTEMA] Reporte generado exitosamente: {nombre_archivo}")
+        print(f"[SYSTEM] Report successfully generated: {nombre_archivo}")
 
     except Exception as e:
-        print(f"❌ Error crítico: {e}")
-
+        print(f"❌ Error crítico / Critical Error: {e}")
 
 if __name__ == "__main__":
     # Ejemplo con José Altuve (514888)
+    # Example with José Altuve (514888)
     reporte_estilo_ejecutivo_pro("514888")
